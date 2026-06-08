@@ -114,3 +114,16 @@ jobs:
           php -d register_argc_argv=On vendor/bin/codecept clean
           php -d register_argc_argv=On vendor/bin/codecept build
           php -d register_argc_argv=On vendor/bin/codecept run Unit
+
+  acceptance-codecept:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Start Docker Compose stack
+        run: make dev-up
+      - name: Initialize DB and test data
+        run: make dev-init
+      - name: Build frontend assets
+        run: make dev-assets
+      - name: Run Acceptance Tests
+        run: docker compose exec -T php vendor/bin/codecept run Acceptance
