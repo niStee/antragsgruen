@@ -66,7 +66,7 @@ class AmendmentController extends Base
 
     public function actionPdfcollection(bool $inactive = false, bool $replaced = false): ResponseInterface
     {
-        $search = AdminMotionFilterForm::getForConsultationFromRequest($this->consultation, $this->consultation->motions, $this->getRequestValue('Search'));
+        $search = AdminMotionFilterForm::getForConsultationFromRequest($this->consultation, $this->consultation->motions, $this->getRequestValue('Search'), false);
         $search->showReplaced = $replaced;
         $amendments = $search->getAmendmentsForExport($this->consultation, $inactive);
 
@@ -557,6 +557,7 @@ class AmendmentController extends Base
             $amendment->flushCacheItems(['procedure']);
 
             $this->consultation->refresh();
+            $amendment->refresh();
             $response['html']        = $this->renderPartial('_set_proposed_procedure', [
                 'amendment' => $amendment,
                 'proposal'  => $proposal,

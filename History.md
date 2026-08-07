@@ -9,13 +9,16 @@
    - Supporting motions and amendments and withdrawing support.
    - Screening motions and amendments as admin.
 - Motion screening can now be configured on a per-motion-type basis.
+- More uploaded PDFs can be handled without having to install additional software or libraries.
 
 ### Version 4.17.2 [not released yet]
 
 - Automatic versioning of proposed procedures (creating new versions when users have already accepted/rejected a proposal) can now be turned off.
+- Statute amendments are now also shown like regular motions on the admin motion list.
 - Bugfix: Some changes to the proposed procedure created a new version of it, although it did not make sense (e.g. publishing it).
 - Bugfix: Automatic scrolling to motion/amendment comments was not working reliably.
 - Bugfix: If a modified adoption of an amendment was proposed, and the amendment was later on deleted, then merging other amendments into the base motion failed.
+- Bugfix: The All-in-one PDF export of motions and amendments for users took into account the filter from the admin motion list, if set.
 
 ### Version 4.17.1 (2026-06-22)
 

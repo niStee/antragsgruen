@@ -9,6 +9,11 @@ use app\models\settings\AntragsgruenApp;
 
 require_once(__DIR__ . DIRECTORY_SEPARATOR . 'defines.php');
 
+if (!defined('K_PATH_FONTS')) {
+    // Needs to be set before the TCPDF classes are loaded, as its autoconfig would resolve a non-existing path
+    define('K_PATH_FONTS', dirname(__DIR__) . '/assets/tc-lib-pdf-fonts/');
+}
+
 if (ini_get('date.timezone') == '') {
     $timezone = 'Europe/Berlin';
     date_default_timezone_set($timezone);
@@ -117,6 +122,8 @@ if (!str_starts_with($params->resourceBase, '/')) {
 if ($params->redis) {
     $components['redis']   = array_merge(['class' => 'yii\redis\Connection'], $params->redis);
     $components['session'] = ['class' => 'yii\redis\Session'];
+} else {
+    $components['session'] = ['class' => 'app\components\yii\RestSessionTester'];
 }
 
 $bootstrap = ['log'];
