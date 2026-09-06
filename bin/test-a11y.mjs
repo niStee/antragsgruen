@@ -41,6 +41,8 @@ let config = {
   runners: ['htmlcs', 'axe'],
   timeout: 30000,
   wait: 500,
+  levelCapWhenNeedsReview: 'warning',
+  includeWarnings: true,
   chromeLaunchConfig: {
     args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
   },
@@ -82,6 +84,24 @@ for (const url of targetUrls) {
       }
       if (errors.length > 10) {
         console.log(`    ... and ${errors.length - 10} more issues.`);
+      }
+    }
+
+    if (warnings.length > 0) {
+      // Warnings are mostly axe/htmlcs "needs review" items (e.g. contrast against a
+      // background image or gradient, which neither runner can compute). Grouped by
+      // rule so the list stays readable; they never affect the exit code.
+      const byRule = new Map();
+      for (const warning of warnings) {
+        const key = `${warning.runner}:${warning.code}`;
+        const entry = byRule.get(key) || { count: 0, selector: warning.selector };
+        entry.count += 1;
+        byRule.set(key, entry);
+      }
+      const sorted = [...byRule.entries()].sort((a, b) => b[1].count - a[1].count);
+      console.log(`    Warnings by rule (needs manual review, not failures):`);
+      for (const [rule, { count, selector }] of sorted) {
+        console.log(`      ⚠️  ${String(count).padStart(3)}x ${rule}  (e.g. ${selector})`);
       }
     }
   } catch (err) {
