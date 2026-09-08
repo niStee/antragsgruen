@@ -77,6 +77,19 @@ class UserGroupAdminMethods
         }
     }
 
+    /**
+     * Everything that changes who may vote, or what their vote weighs, ends up here.
+     *
+     * Two things follow from such a change: the read cache of the group memberships is stale, and
+     * the votings that are running have a new state to publish - who may vote, how much their vote
+     * weighs and how many members a group has are all part of their payload.
+     */
+    private function onVotersChanged(): void
+    {
+        ConsultationUserGroup::flushUserIdCache();
+        LiveTools::sendVotingStatesForUserGroupChange($this->consultation);
+    }
+
     private function logUserGroupAdd(User $user, ConsultationUserGroup $group): void
     {
         if (User::getCurrentUser()) {
@@ -136,6 +149,7 @@ class UserGroupAdminMethods
 
         $this->consultation->refresh();
         AdminTodoItem::flushUserTodoCount($this->consultation, $userId);
+        $this->onVotersChanged();
     }
 
     public function setUserData(int $userId, string $nameGiven, string $nameFamily, string $organization, string $ppReplyTo, ?string $newPassword, ?string $newEmail, bool $remove2Fa, bool $force2Fa, bool $preventPwdChange, bool $forcePwdChange, bool $allowPrivateComments): void
@@ -193,6 +207,8 @@ class UserGroupAdminMethods
         $settings->setVoteWeight($this->consultation, $voteWeight);
         $user->setSettingsObj($settings);
         $user->save();
+
+        $this->onVotersChanged();
     }
 
     private function getUserGroup(int $userGroupId): ?ConsultationUserGroup
@@ -243,6 +259,10 @@ class UserGroupAdminMethods
 
         $userGroup->refresh();
         $this->consultation->refresh();
+        ConsultationUserGroup::flushUserIdCache();
+        // Deliberately no live event here: the only caller of this holds the write lock of a voting,
+        // and publishing under that lock would make every voter wait for the broker. It publishes
+        // once the locks are released instead.
     }
 
     /**
@@ -269,6 +289,7 @@ class UserGroupAdminMethods
 
         $this->consultation->refresh();
         AdminTodoItem::flushUserTodoCount($this->consultation, $user->id);
+        $this->onVotersChanged();
     }
 
     public function deleteUser(int $userId): void
@@ -281,6 +302,7 @@ class UserGroupAdminMethods
         $user = User::findOne(['id' => $userId]);
         $user->deleteAccount();
         $this->consultation->refresh();
+        $this->onVotersChanged();
     }
 
     public function createUserGroup(string $groupName): void
@@ -344,6 +366,9 @@ class UserGroupAdminMethods
         }
         /** @noinspection PhpUnhandledExceptionInspection */
         $group->delete();
+
+        $this->consultation->refresh();
+        $this->onVotersChanged();
     }
 
     /**
@@ -423,6 +448,9 @@ class UserGroupAdminMethods
                 $msg = str_replace('%NUM%', (string)$created, \Yii::t('admin', 'siteacc_user_added_x'));
             }
             $this->session->setFlash('success', $msg);
+            // Once for the whole batch: the users were added one by one, but the votings only have
+            // one new state to tell about
+            $this->onVotersChanged();
         }
     }
 
@@ -600,6 +628,7 @@ class UserGroupAdminMethods
             $this->logUserGroupAdd($user, $userGroup);
         }
         $user->refresh();
+        $this->onVotersChanged();
 
         $this->sendWelcomeEmail($user, $emailText, null);
 
@@ -660,6 +689,8 @@ class UserGroupAdminMethods
                     $msg = str_replace('%NUM%', (string)$created, \Yii::t('admin', 'siteacc_user_added_x'));
                 }
                 $this->session->setFlash('success', $msg);
+                // Once for the whole batch, see addUsersBySamlWw()
+                $this->onVotersChanged();
             } else {
                 $this->session->setFlash('error', \Yii::t('admin', 'siteacc_user_added_0'));
             }
@@ -671,13 +702,13 @@ class UserGroupAdminMethods
      * @param array<string, int> $headerMap
      * @return array{processedRows: int, errors: string[]}
      */
-    public function processCsvChunk($fp, array $headerMap, string $collisionBehavior, bool $sendEmail, string $emailText): array
+    public function processCsvChunk($fp, array $headerMap, string $collisionBehavior, bool $sendEmail, string $emailText, string $delimiter = ','): array
     {
         $processedRows = 0;
         $errors = [];
         $maxRowsPerChunk = 50;
 
-        while ($processedRows < $maxRowsPerChunk && ($row = fgetcsv($fp, escape: '\\')) !== false) {
+        while ($processedRows < $maxRowsPerChunk && ($row = fgetcsv($fp, separator: $delimiter, escape: '\\')) !== false) {
             if (empty(array_filter($row))) {
                 continue; // Skip empty rows
             }
@@ -685,7 +716,7 @@ class UserGroupAdminMethods
             $processedRows++;
 
             try {
-                $email = isset($headerMap['email'], $row[$headerMap['email']]) ? trim($row[$headerMap['email']]) : '';
+                $email = isset($headerMap['email'], $row[$headerMap['email']]) ? mb_strtolower(trim($row[$headerMap['email']])) : '';
                 if ($email === '') {
                     $errors[] = 'Missing email on row.';
                     continue;
@@ -704,12 +735,18 @@ class UserGroupAdminMethods
                 $userGroups = [];
                 if (isset($headerMap['groups']) && !empty($row[$headerMap['groups']])) {
                     $groupNames = array_map('trim', explode(',', $row[$headerMap['groups']]));
+                    $availableGroups = $this->consultation->getAllAvailableUserGroups();
                     foreach ($groupNames as $groupName) {
                         if ($groupName === '') continue;
-                        $group = ConsultationUserGroup::find()
-                            ->where(['title' => $groupName])
-                            ->orWhere(['externalId' => $groupName])
-                            ->one();
+                        $group = null;
+                        foreach ($availableGroups as $availableGroup) {
+                            if (strcasecmp($availableGroup->title, $groupName) === 0 ||
+                                ($availableGroup->externalId !== null && strcasecmp($availableGroup->externalId, $groupName) === 0)
+                            ) {
+                                $group = $availableGroup;
+                                break;
+                            }
+                        }
                         if ($group) {
                             $userGroups[] = $group;
                         } else {
@@ -742,7 +779,11 @@ class UserGroupAdminMethods
                     $user->save(false);
 
                     if ($collisionBehavior === 'replace') {
-                        $user->unlinkAll('userGroups', true);
+                        $consultationGroups = $user->getUserGroupsForConsultation($this->consultation);
+                        foreach ($consultationGroups as $oldGroup) {
+                            $user->unlink('userGroups', $oldGroup, true);
+                            $this->logUserGroupRemove($user, $oldGroup);
+                        }
                         foreach ($userGroups as $group) {
                             $user->link('userGroups', $group);
                             $this->logUserGroupAdd($user, $group);
@@ -757,10 +798,10 @@ class UserGroupAdminMethods
                         }
                     }
                 } else {
-                    $auth = User::AUTH_EMAIL . ':' . mb_strtolower($email);
+                    $auth = User::AUTH_EMAIL . ':' . $email;
                     $user = new User();
                     $user->auth = $auth;
-                    $user->email = mb_strtolower($email);
+                    $user->email = $email;
                     $user->name = $name;
                     if ($firstName !== '') $user->nameGiven = $firstName;
                     if ($lastName !== '') $user->nameFamily = $lastName;
@@ -782,6 +823,12 @@ class UserGroupAdminMethods
             } catch (\Exception $e) {
                 $errors[] = $email . ': ' . $e->getMessage();
             }
+        }
+
+        if ($processedRows > 0) {
+            // Once per chunk - the chunk is what the caller drives the import in, and a row is far
+            // too small a unit to publish a whole voting state for
+            $this->onVotersChanged();
         }
 
         return [

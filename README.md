@@ -424,7 +424,7 @@ If configuring Antragsgrün [using environment variables](./docs/environment-var
 
 ### Enabling the Live Server
 
-The optional [Live Server](https://github.com/CatoTH/antragsgruen-live) can be installed to enable live updates for speaking lists (and potentially more components in the future).
+The optional [Live Server](https://github.com/CatoTH/antragsgruen-live) can be installed to enable live updates for the speaking lists, the votings and the "Currently debated" widget. Without it, those widgets poll the REST API instead; both ways are described in [Live Data](./docs/technical/live-data.md).
 
 As a prerequisite, JWT Signing needs to be enabled (see above). Then, the location of the RabbitMQ server, the credentials of the management API and the name of the exchange needs to configured, along with the absolute URI of the Websocket endpoint the Live Server exposes:
 
@@ -441,6 +441,24 @@ As a prerequisite, JWT Signing needs to be enabled (see above). Then, the locati
     }
 }
 ```
+
+### Polling intervals
+
+Wherever no Live Server is reachable, the widgets ask the REST API for the current state at a fixed interval. How often that is can be set per data channel, to trade the delay of an update against the load a large event causes:
+
+```json5
+{
+    "polling": {
+        "user/speech": 5000, // How often a participant's speaking list is loaded, in milliseconds
+        "admin/speech": 1000,
+        "user/debate": 5000,
+        "user/voting": 5000,
+        "admin/voting": 2000
+    }
+}
+```
+
+Every channel that is not listed uses its default (see [Live Data](./docs/technical/live-data.md), which also lists the equivalent `POLLING_INTERVAL_*` environment variables). A configured interval is binding: widgets that ask for faster updates - the fullscreen projector does - do not get them.
 
 Developing
 ----------
@@ -486,7 +504,7 @@ docker exec antragsgruen-pnpm-helper-1 pnpm ci
 
 To run the watcher that compiles SCSS and Vue.JS files, use:
 ```shell
-docker compose -f docker-compose.development.yml --profile pnpm-helper --profile gulp-watch up
+docker compose -f docker-compose.development.yml --profile pnpm-helper --profile vite-watch up
 ```
 
 The embedded sample OpenTelemetry Collector is reachable under:
@@ -496,7 +514,7 @@ The embedded sample OpenTelemetry Collector is reachable under:
 
 You can enable debug mode by creating an empty file config/DEBUG.
 
-To compile the JavaScript- and CSS-Files, you need to install Gulp:
+The JavaScript- and CSS-Files are compiled using [Vite](https://vitejs.dev/):
 ```bash
 pnpm install # Installs all required packages
 
@@ -508,7 +526,7 @@ After updating the source code from git, do:
 ```bash
 ./composer.phar install
 ./yii migrate
-gulp
+pnpm run build
 ```
 
 
@@ -575,7 +593,7 @@ The most frequent use case for plugins is custom themes / layouts. You can devel
 - The ``Module.php`` needs the static method ``getProvidedLayout`` that returns the asset bundle. See the [gruen_ci](plugins/gruen_ci/Module.php) for examples.
 - Create a file ```plugins/mylayout/assets/mylayout.scss```. Again, use the existing plugins as an example to get the imports right.
 - Adapt the SCSS variables and add custom styles
-- Run ```gulp``` to compile the SCSS into CSS
+- Run ```pnpm run build``` to compile the SCSS into CSS
 - Activate the plugin as said above.
 - Now, you can choose your new theme in the consultation settings
 

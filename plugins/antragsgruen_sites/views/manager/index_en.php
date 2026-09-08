@@ -17,7 +17,7 @@ $controller->layoutParams->canonicalUrl      = 'https://motion.tools/';
 $controller->layoutParams->alternateLanuages = ['de' => 'https://antragsgruen.de/'];
 $controller->layoutParams->addInlineCss('
     .homeFigure { text-align: center; }
-    .homeFigure figcaption { margin-top: -20px; margin-bottom: 20px; font-size: 0.8em; font-style: italic; }
+    .homeFigure figcaption { margin-top: -20px; margin-bottom: 20px; font-size: 0.8em; font-style: italic; color: #4a4a4a; }
     .homeFigureAmendment img { max-width: 100%; }
     @media (min-width: 800px) {
         .homeFigureAmendment img { max-width: 600px; }
@@ -94,6 +94,7 @@ $controller->layoutParams->addInlineCss('
             <li>Accepted amendments can be merged into the original document - creating a final resolution works even with many amendments and ad-hoc changes</li>
             <li>E-Mail-Notification on relevant events both for administrators and participants</li>
             <li>Defining responsibilities for motions and topics, internal admin tools for decision-finding</li>
+            <li>Support for multi-lingual consultations (e.g. by international organizations or in multilingual countries)</li>
             <li>... and much more.</li>
         </ul>
 
@@ -113,6 +114,10 @@ $controller->layoutParams->addInlineCss('
             <a href="/help/roberts-rules">
                 <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                 Concepts: Antragsgrün and Robert’s Rules of Order
+            </a><br>
+            <a href="/help/multi-language">
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                Concepts: Multilingual motions
             </a><br>
         </p>
 
