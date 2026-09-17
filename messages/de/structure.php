@@ -18,6 +18,7 @@ return [
 
     'type_unavailable_language'  => 'Dies ist in dieser Sprache nicht verfügbar. Verfügbare Sprachen: %LANGUAGES%.',
     'section_lang_fallback_hint' => 'Dieser Inhalt wurde noch nicht in deine Sprache übersetzt. Es wird stattdessen die %LANGUAGE%-Version angezeigt.',
+    'section_lang_fallback_mini' => 'Noch nicht übersetzt',
     'policy_deadline_over'       => 'Der Antragsschluss ist vorbei.',
     'policy_deadline_over_comm'  => 'Zum aktuellen Zeitpunkt sind keine Kommentare möglich.<br>Das Kommentieren ist möglich:',
     'policy_deadline_over_merge' => 'Zum aktuellen Zeitpunkt ist das Einpflegen nicht möglich.<br>Das Einpflegen ist möglich:',
@@ -185,6 +186,7 @@ return [
     'STATUS_PAUSED'                       => 'Pausiert',
     'STATUS_MISSING_INFORMATION'          => 'Informationen fehlen',
     'STATUS_DISMISSED'                    => 'Nicht zugelassen',
+    'STATUS_ADJOURNED'                    => 'Vertagt',
     'STATUS_COLLECTING_SUPPORTERS'        => 'Unterstützer*innen sammeln',
     'STATUS_DRAFT_ADMIN'                  => 'Entwurf (Admin)',
     'STATUS_PROCESSED'                    => 'Behandelt',
@@ -212,6 +214,7 @@ return [
     'PROPOSED_OBSOLETED_BY_MOT'   => 'Erledigt durch anderen Antrag',
     'PROPOSED_CUSTOM_STRING'      => 'Sonstiger Status',
     'PROPOSED_MOVE_TO_OTHER_MOTION' => 'Verschoben zu anderem Antrag',
+    'PROPOSED_ADJOURNED'          => 'Vertagt',
 
     'section_comment_none'      => 'Keine Kommentare',
     'section_comment_motion'    => 'Abschnitt als ganzes kommentierbar',

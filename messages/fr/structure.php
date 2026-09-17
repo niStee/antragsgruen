@@ -112,6 +112,7 @@ return [
     'STATUS_PAUSED'                       => 'En pause',
     'STATUS_MISSING_INFORMATION'          => 'Information manquante',
     'STATUS_DISMISSED'                    => 'Dismissed',
+    'STATUS_ADJOURNED'                    => 'Ajournée',
     'STATUS_COLLECTING_SUPPORTERS'        => 'Appel à soutiens',
     'STATUS_DRAFT_ADMIN'                  => 'Brouillon (Admin)',
     'STATUS_SUBMITTED_UNSCREENED_CHECKED' => 'Déposé (examiné, pas encore publié)',
@@ -163,6 +164,7 @@ return [
 
     'type_unavailable_language'  => 'Ceci n\'est pas disponible dans cette langue. Langues disponibles : %LANGUAGES%.',
     'section_lang_fallback_hint' => 'Ce contenu n\'a pas encore été traduit dans ta langue. La version %LANGUAGE% est affichée à la place.',
+    'section_lang_fallback_mini' => 'Pas encore traduit',
     'policy_deadline_over_comm'  => 'Aucun commentaire n\'est possible pour le moment.',
     'policy_deadline_over_merge' => 'L\'intégration n\'est pas possible pour le moment.',
     'policy_deadline_from'       => 'à partir de %from%',
@@ -247,6 +249,7 @@ return [
     'PROPOSED_OBSOLETED_BY_MOT'     => 'Traité par une autre motion',
     'PROPOSED_CUSTOM_STRING'        => 'Statut personnalisé',
     'PROPOSED_MOVE_TO_OTHER_MOTION' => 'Déplacé vers une autre motion',
+    'PROPOSED_ADJOURNED'            => 'Ajournée',
 
     'home_layout_agenda_hide_amend' => 'Les motions sont sous l\'ordre du jour, amendements masqués',
     'home_layout_discussion_tags'   => 'Commentaires au-dessus de la liste des motions, Tags / catégories avec filtre',

@@ -18,6 +18,7 @@ return [
 
     'type_unavailable_language'  => 'This is not available in this language. Available languages: %LANGUAGES%.',
     'section_lang_fallback_hint' => 'This content has not been translated into your language yet. Showing the %LANGUAGE% version instead.',
+    'section_lang_fallback_mini' => 'Untranslated',
     'policy_deadline_over'       => 'The deadline is over',
     'policy_deadline_over_comm'  => 'No comments are possible at this point of time.',
     'policy_deadline_over_merge' => 'Merging is not possible at this point of time.',
@@ -185,6 +186,7 @@ return [
     'STATUS_PAUSED'                       => 'Paused',
     'STATUS_MISSING_INFORMATION'          => 'Missing information',
     'STATUS_DISMISSED'                    => 'Dismissed',
+    'STATUS_ADJOURNED'                    => 'Adjourned',
     'STATUS_COLLECTING_SUPPORTERS'        => 'Call for supporters',
     'STATUS_DRAFT_ADMIN'                  => 'Draft (Admin)',
     'STATUS_PROCESSED'                    => 'Processed',
@@ -212,6 +214,7 @@ return [
     'PROPOSED_OBSOLETED_BY_MOT'   => 'Handled by another motion',
     'PROPOSED_CUSTOM_STRING'      => 'Custom status',
     'PROPOSED_MOVE_TO_OTHER_MOTION' => 'Moved to other motion',
+    'PROPOSED_ADJOURNED'          => 'Adjourned',
 
     'section_comment_none'      => 'No comments',
     'section_comment_motion'    => 'Comment the whole motion as one',
