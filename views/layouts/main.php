@@ -94,6 +94,7 @@ echo '<link rel="stylesheet" href="' . $mainCssFile . '">' . "\n";
 if ($params->jsErrorTracking) {
     echo $this->render('_error_tracking');
 }
+
 echo '<script src="' . StaticResourceTools::resourceUrl('js/jquery-4.0.0.min.js') . '" crossorigin="anonymous"></script>';
 
 $consultation = $controller->consultation;
