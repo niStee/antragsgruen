@@ -19,7 +19,9 @@ class AmendmentEditForm
     /** @var int[] */
     public array $tags = [];
 
+    /** @var AmendmentSection[] */
     public array $sections = [];
+
     public ?int $amendmentId = null;
     public string $reason = '';
     public string $editorial = '';
@@ -129,7 +131,7 @@ class AmendmentEditForm
         return $form;
     }
 
-    public function getAllowEditinginitiators(): bool
+    public function getAllowEditingInitiators(): bool
     {
         return $this->allowEditingInitiators;
     }
@@ -260,6 +262,9 @@ class AmendmentEditForm
         $amendingAmendment = $dto->amendingAmendmentId ? $consultation->getAmendment($dto->amendingAmendmentId) : null;
         if (!$this->motion->isCurrentlyAmendable(allowAdmins: true, assumeLoggedIn: false, throwExceptions: false, amendingAmendment: $amendingAmendment)) {
             throw new FormError(\Yii::t('amend', 'err_create_permission'));
+        }
+        if ($amendingAmendment?->amendingAmendmentId) {
+            throw new FormError(\Yii::t('amend', 'err_no_three_level_amendment'));
         }
 
         $amendment = new Amendment();

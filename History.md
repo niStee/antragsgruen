@@ -1,6 +1,6 @@
 # Version history
 
-## Version 4.18.0 [not released yet]
+## Version 4.18.0 (2026-10-11)
 
 - A new module "Real-Time Debate on site" improves the use of Antragsgrün directly on site, combining the speaking list, the voting and the agenda to a "Currently Debated" view.
 - The REST API has been improved. It supports (on top of previous functionality):
@@ -21,6 +21,17 @@
 - Several improvements regarding accessibility - including more work on WCAG AA compliance.
 - A new status exists for motions, amdments and proposed procedures: "adjourned".
 - The admin notification e-mail for new motion/amendment submission can now slighly better configured.
+- Admins can not support amendments / motions anymore if they are not allowed by the motion type's user group permissions.
+- The PDF Collection of motions and amendments now behaves differently depending on where it's called from: from the admin list, it shows the same list as the admin list; from the regular home page, the list of user-visible motions/amendments.
+- A new PDF export view exists in the admin list for motions: "Amendments side by side" shows amended sections next to the original motion text in a two-column view.
+- If an organization publishes a motion/amendment, the activity log now shows that organization as the actor, not the logged in user.
+- The widget on the consultation page indicating phases for motion types with complex deadlines is now disabled by default. It can be enabled optionally from the settings.
+- Bugfix: pasting text in amendments was broken.
+- Bugfix: when "No Initiator" was selected for a motion type, the editing form was broken under some circumstances.
+- Bugfix: PDFs uploaded in non-public motion sections could not be viewed even by admins.
+- Bugfix: The collapsible menu navigation on small screens was broken.
+- Bugfix: The system now actively prevents amendments to amendments to amendments.
+- Bugfix: The To Do list was often not working properly for statute amendments.
 
 ### Version 4.17.2 (2026-08-23)
 
