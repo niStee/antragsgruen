@@ -40,8 +40,8 @@ services:
   nginx:
     image: nginx:latest
     ports:
-      - "12380:80"
-      - "12443:443"
+      - "127.0.0.1:12380:80"
+      - "127.0.0.1:12443:443"
     volumes:
       - "./:/var/www/antragsgruen:ro"
       - "./docker/nginx:/etc/nginx/conf.d"
@@ -92,8 +92,10 @@ services:
   mysql:
     image: mariadb
     command: --max_allowed_packet=33554432
-    ports:
-      - "13306:3306"
+    # No host port publication. The application connects over the Compose
+    # network (DB_HOST=mysql), so exposing 3306 on the host is unnecessary
+    # and made the database reachable from every host that can route to
+    # this machine.
     environment:
       MARIADB_ROOT_PASSWORD: ${DB_PASSWORD:?Please set DB_PASSWORD in .env}
       MARIADB_DATABASE: antragsgruen
@@ -117,8 +119,8 @@ services:
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS:?Please set RABBITMQ_DEFAULT_PASS in .env}
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER:?Please set RABBITMQ_DEFAULT_USER in .env}
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "127.0.0.1:5672:5672"
+      - "127.0.0.1:15672:15672"
     profiles:
       - live
 
@@ -148,8 +150,8 @@ services:
     image: otel/opentelemetry-collector
     command: ["--config=/etc/otel/collector-config.yml"]
     ports:
-      - "4317:4317"
-      - "4318:4318"
-      - "55679:55679"
+      - "127.0.0.1:4317:4317"
+      - "127.0.0.1:4318:4318"
+      - "127.0.0.1:55679:55679"
     volumes:
       - "./docker/otel/collector-config.yml:/etc/otel/collector-config.yml:ro"
