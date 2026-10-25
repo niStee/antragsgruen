@@ -6,15 +6,16 @@ use app\components\Tools;
 use app\models\db\{ConsultationMotionType, Consultation};
 use app\models\settings\Consultation as ConsultationSettings;
 use app\components\UrlHelper;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var Yii\web\View $this
  * @var Consultation $consultation
  */
 
-/** @var \app\controllers\admin\IndexController $controller */
+/** @var \app\controllers\admin\AgendaController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout = $controller->layoutParams;
 
 $layout->addCSS('css/backend.css');

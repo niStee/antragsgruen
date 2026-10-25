@@ -6,14 +6,14 @@ use app\models\sectionTypes\{ISectionType, SectionLanguageMode, TextSimpleCommon
 use app\models\supportTypes\SupportBase;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var yii\web\View $this
  * @var array<array{motion: Motion, amendments: Amendment[]}> $amendments
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\admin\AmendmentController $controller */
 $controller   = $this->context;
 $consultation = $controller->consultation;
 

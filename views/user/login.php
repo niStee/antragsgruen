@@ -2,10 +2,9 @@
 
 use app\models\db\ConsultationText;
 use app\models\settings\AntragsgruenApp;
-use app\components\{Captcha, UrlHelper};
+use app\components\{Html, Captcha, UrlHelper};
 use app\models\db\User;
 use app\models\forms\LoginUsernamePasswordForm;
-use yii\helpers\Html;
 use app\models\settings\Site as SiteSettings;
 
 /**
@@ -18,6 +17,7 @@ use app\models\settings\Site as SiteSettings;
 
 /** @var \app\controllers\UserController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 
 $this->title = Yii::t('user', 'login_title');

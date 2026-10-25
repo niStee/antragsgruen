@@ -7,13 +7,13 @@
  * @var string $context
  */
 
-use app\components\{IMotionStatusFilter, UrlHelper};
+use app\components\{Html, IMotionStatusFilter, UrlHelper};
 use app\models\db\{Amendment, AmendmentProposal};
-use yii\helpers\Html;
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\AmendmentController $controller */
 $controller = $this->context;
 $consultation = $controller->consultation;
+/** @var \app\models\settings\Layout $layout */
 $layout = $controller->layoutParams;
 
 $collidingAmendments = $proposal->collidesWithOtherProposedAmendments();

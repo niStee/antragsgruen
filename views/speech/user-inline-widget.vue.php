@@ -1,11 +1,12 @@
 <?php
 
 use app\components\UrlHelper;
-use yii\helpers\Html;
+use app\components\Html;
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\ConsultationController $controller */
 $controller = $this->context;
 $consultation = $controller->consultation;
+/** @var \app\models\settings\Layout $layout */
 $layout = $controller->layoutParams;
 
 $layout->addJsTranslation('speech');

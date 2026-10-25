@@ -1,9 +1,8 @@
 <?php
 
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
-use app\components\{HTMLTools, MotionSorter, Tools, UrlHelper};
+use app\components\{Html, HTMLTools, MotionSorter, Tools, UrlHelper};
 use app\models\db\{ConsultationAgendaItem, ConsultationSettingsTag, Motion, MotionSupporter, User};
-use yii\helpers\Html;
 
 /**
  * @var yii\web\View $this
@@ -11,8 +10,9 @@ use yii\helpers\Html;
  * @var \app\models\forms\MotionEditForm $form
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\admin\MotionController $controller */
 $controller   = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout       = $controller->layoutParams;
 $consultation = $controller->consultation;
 

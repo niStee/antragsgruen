@@ -1,8 +1,7 @@
 <?php
 
-use app\components\{DebateTools, LiveDataChannels, StaticResourceTools, UrlHelper};
+use app\components\{Html, DebateTools, LiveDataChannels, StaticResourceTools, UrlHelper};
 use app\models\db\User;
-use yii\helpers\Html;
 
 /**
  * @var \app\models\db\Consultation $consultation
@@ -13,6 +12,7 @@ use yii\helpers\Html;
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $consultation = $controller->consultation;
+/** @var \app\models\settings\Layout $layout */
 $layout = $controller->layoutParams;
 
 // When the "Currently debated" feature is enabled, the projector offers it as a dropdown option

@@ -4,7 +4,7 @@ use app\components\HTMLTools;
 use app\models\db\{Amendment, Motion};
 use app\models\sectionTypes\SectionLanguageMode;
 use CatoTH\HTML2OpenDocument\Spreadsheet;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var yii\web\View $this
@@ -13,7 +13,7 @@ use yii\helpers\Html;
  * @var array<array{motion: Motion, amendments: Amendment[]}> $amendments
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\admin\AmendmentController $controller */
 $controller   = $this->context;
 $consultation = $controller->consultation;
 

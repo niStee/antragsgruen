@@ -1,11 +1,12 @@
 <?php
 
 use app\components\MotionSorter;
-use yii\helpers\Html;
+use app\components\Html;
 
 /** @var \app\controllers\ConsultationController $controller */
 $controller = $this->context;
 $consultation = $controller->consultation;
+/** @var \app\models\settings\Layout $layout */
 $layout = $controller->layoutParams;
 
 $layout->addBreadcrumb(Yii::t('con', 'All Motions'));

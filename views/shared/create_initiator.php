@@ -1,10 +1,9 @@
 <?php
 
-use app\components\{RequestContext, Tools};
+use app\components\{Html, RequestContext, Tools};
 use app\models\db\{ConsultationMotionType, ISupporter};
 use app\models\settings\{AntragsgruenApp, ConsultationUserOrganisation, InitiatorForm};
 use app\models\supportTypes\SupportBase;
-use yii\helpers\Html;
 
 /**
  * @var Yii\web\View $this
@@ -21,10 +20,11 @@ use yii\helpers\Html;
  * @var ConsultationMotionType $motionType
  */
 
-/** @var app\controllers\Base $controller */
+/** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $consultation = $controller->consultation;
 
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 $layout->loadDatepicker();
 
@@ -193,7 +193,7 @@ if ($adminMode) {
                 echo HTML::dropDownList('Initiator[primaryOrgaName]', $prePrimaryName, $selectOrganisations, [
                     'id' => 'initiatorPrimaryOrgaName',
                     'class' => 'stdDropdown',
-                ], true);
+                ]);
             }
             ?>
         </div>

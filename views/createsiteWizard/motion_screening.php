@@ -1,5 +1,5 @@
 <?php
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var \app\models\forms\SiteCreateForm $model
@@ -15,14 +15,14 @@ use yii\helpers\Html;
         </legend>
         <div class="description"><?= $t('screening_desc') ?></div>
         <div class="options">
-            <label class="radio-checkbox-label radio-label two-lines value-0">
+            <label class="radio-checkbox-label radio-label value-0">
                 <span class="title"><?= $t('screening_no') ?></span>
                 <span class="description"></span>
                 <span class="input">
                     <?= Html::radio('SiteCreateForm[motionScreening]', !$model->motionScreening, ['value' => 0]); ?>
                 </span>
             </label>
-            <label class="radio-checkbox-label radio-label two-lines value-1">
+            <label class="radio-checkbox-label radio-label value-1">
                 <span class="title"><?= $t('screening_yes') ?></span>
                 <span class="description"></span>
                 <span class="input">

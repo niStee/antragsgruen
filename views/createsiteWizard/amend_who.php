@@ -1,6 +1,6 @@
 <?php
 use app\models\forms\SiteCreateForm;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var SiteCreateForm $model
@@ -24,7 +24,7 @@ use yii\helpers\Html;
                     ); ?>
                 </span>
             </label>
-            <label class="radio-checkbox-label radio-label two-lines value-2">
+            <label class="radio-checkbox-label radio-label value-2">
                 <span class="title long"><?= $t('amendwho_loggedin') ?></span>
                 <span class="description"></span>
                 <span class="input">

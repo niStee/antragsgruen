@@ -1,13 +1,12 @@
 <?php
 
-use app\components\{StaticResourceTools, UrlHelper};
+use app\components\{Html, StaticResourceTools, UrlHelper};
 use app\models\sectionTypes\ISectionType;
 use app\models\settings\{Consultation as ConsultationSettings, PrivilegeQueryContext, Privileges};
 use app\models\db\{Motion, MotionComment, MotionSupporter, User};
 use app\models\forms\CommentForm;
 use app\models\policies\IPolicy;
 use app\views\motion\LayoutHelper;
-use yii\helpers\Html;
 
 /**
  * @var bool $reducedNavigation
@@ -26,8 +25,9 @@ $consultation = $motion->getMyConsultation();
 $hasPp = $motion->getMyMotionType()->getSettingsObj()->hasProposedProcedure;
 $hasPpAdminbox = ($hasPp && !$motion->isResolution() && $motion->getLatestProposal()->canEditLimitedProposedProcedure());
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\MotionController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 if ($hasPp && $hasPpAdminbox) {
     $layout->loadSelectize();

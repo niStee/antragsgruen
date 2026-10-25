@@ -1,10 +1,9 @@
 <?php
 
 use app\models\settings\Consultation as ConsultationSettings;
-use app\components\{IMotionSorter, UrlHelper};
+use app\components\{Html, IMotionSorter, UrlHelper};
 use app\models\db\{Amendment, IMotion, Motion};
 use app\models\forms\AdminMotionFilterForm;
-use yii\helpers\Html;
 
 /**
  * @var yii\web\View $this
@@ -16,8 +15,9 @@ use yii\helpers\Html;
  * @var string|null $motionId
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\admin\MotionListController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 $consultation = $controller->consultation;
 

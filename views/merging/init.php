@@ -1,9 +1,8 @@
 <?php
 
-use app\components\{HTMLTools, UrlHelper};
+use app\components\{Html, HTMLTools, UrlHelper};
 use app\models\db\{Amendment, Motion};
 use app\models\mergeAmendments\{Draft, Init};
-use yii\helpers\Html;
 
 /**
  * @var Yii\web\View $this
@@ -13,8 +12,9 @@ use yii\helpers\Html;
  * @var Amendment[] $amendments
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\MotionController $controller */
 $controller  = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout      = $controller->layoutParams;
 
 $this->title           = str_replace('%NAME%', $motion->getTitleWithPrefix(), Yii::t('amend', 'merge_init_title'));

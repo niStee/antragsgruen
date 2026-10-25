@@ -1,6 +1,6 @@
 <?php
 
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var yii\web\View $this
@@ -13,6 +13,7 @@ use yii\helpers\Html;
 /** @var \app\controllers\ManagerController $controller */
 $controller  = $this->context;
 $this->title = Yii::t('manager', 'title_install');
+/** @var \app\models\settings\Layout $layout */
 $layout      = $controller->layoutParams;
 
 ?>

@@ -5,9 +5,8 @@
  * @var \app\models\forms\ConsultationActivityFilterForm $form
  */
 
-use app\components\{IMotionStatusFilter, MotionSorter, Tools, UrlHelper};
+use app\components\{Html, IMotionStatusFilter, MotionSorter, Tools, UrlHelper};
 use app\models\db\{Amendment, Motion};
-use yii\helpers\Html;
 
 /** @var \app\controllers\ConsultationController $controller */
 $controller = $this->context;
@@ -15,6 +14,7 @@ $controller = $this->context;
 $consultation = UrlHelper::getCurrentConsultation();
 $this->title  = Yii::t('con', 'collecting_bc');
 
+/** @var \app\models\settings\Layout $layout */
 $layout = $controller->layoutParams;
 $layout->addBreadcrumb(Yii::t('con', 'collecting_bc'));
 

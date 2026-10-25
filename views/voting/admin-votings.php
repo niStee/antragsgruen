@@ -2,20 +2,20 @@
 
 use app\models\layoutHooks\Layout;
 use app\models\policies\IPolicy;
-use app\components\{HTMLTools, LiveDataChannels, UrlHelper, VotingAdminWidgetData};
+use app\components\{Html, HTMLTools, LiveDataChannels, UrlHelper, VotingAdminWidgetData};
 use app\models\db\User;
 use app\models\majorityType\IMajorityType;
 use app\models\proposedProcedure\Factory;
 use app\models\votings\AnswerTemplates;
-use yii\helpers\Html;
 
 /**
  * @var \yii\web\View $this
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\ConsultationController $controller */
 $controller = $this->context;
 $consultation = $controller->consultation;
+/** @var \app\models\settings\Layout $layout */
 $layout = $controller->layoutParams;
 // The voting endpoints authenticate by JWT, like the rest of the REST API
 $layout->provideJwt = true;

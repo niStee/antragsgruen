@@ -1,19 +1,19 @@
 <?php
 
-use app\components\{LiveDataChannels, UrlHelper};
+use app\components\{Html, LiveDataChannels, UrlHelper};
 use app\models\api\SpeechUser;
 use app\models\settings\Privileges;
 use app\models\db\{SpeechQueue, User};
-use yii\helpers\Html;
 
 /**
  * @var \yii\web\View $this
  * @var SpeechQueue $queue
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\ConsultationController $controller */
 $controller = $this->context;
 $consultation = $controller->consultation;
+/** @var \app\models\settings\Layout $layout */
 $layout       = $controller->layoutParams;
 $layout->addBreadcrumb(Yii::t('speech', 'speaking_bc'));
 $user = User::getCurrentUser();
