@@ -1,10 +1,9 @@
 <?php
 
-use app\components\{HTMLTools, UrlHelper};
+use app\components\{Html, HTMLTools, UrlHelper};
 use app\models\db\{Amendment, Motion};
 use app\models\mergeAmendments\Draft;
 use app\models\sectionTypes\SectionLanguageMode;
-use yii\helpers\Html;
 
 /**
  * @var Yii\web\View $this
@@ -14,8 +13,9 @@ use yii\helpers\Html;
  * @var \app\models\MotionSectionChanges[] $changes
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\MotionController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 
 $layout->robotsNoindex = true;
@@ -122,7 +122,7 @@ if (count($newMotion->replacedMotion->getVisibleAmendments()) > 0) {
                         $statuses[$amendment->status] = $statusesAll[$amendment->status];
                         $statusPre = $mergingDraft->amendmentStatuses[$amendment->id] ?? Amendment::STATUS_PROCESSED;
                         $opts = ['id' => 'amendmentStatus' . $amendment->id, 'class' => 'stdDropdown'];
-                        echo Html::dropDownList('amendStatus[' . $amendment->id . ']', $statusPre, $statuses, $opts, true);
+                        echo Html::dropDownList('amendStatus[' . $amendment->id . ']', $statusPre, $statuses, $opts);
                         ?>
                     </div>
                     <div class="commentHolder">

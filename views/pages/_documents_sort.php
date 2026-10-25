@@ -1,13 +1,13 @@
 <?php
 
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var \yii\web\View $this
  * @var \app\models\db\ConsultationFileGroup[] $fileGroups
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\PagesController $controller */
 
 $controller = $this->context;
 $consultation = $controller->consultation;

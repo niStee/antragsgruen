@@ -1,9 +1,8 @@
 <?php
 
 use app\models\settings\{PrivilegeQueryContext, Privileges};
-use app\components\{HTMLTools, UrlHelper};
+use app\components\{Html, HTMLTools, UrlHelper};
 use app\models\db\{Amendment, IMotion, Motion, User};
-use yii\helpers\Html;
 
 /**
  * @var Yii\web\View $this
@@ -19,7 +18,7 @@ use yii\helpers\Html;
  * @var boolean $colDate
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\admin\MotionListController $controller */
 $controller = $this->context;
 $consultation = $controller->consultation;
 $motionType = $entry->getMyMotionType();

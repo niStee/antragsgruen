@@ -1,9 +1,8 @@
 <?php
 
 use app\models\db\{Amendment, AmendmentComment, AmendmentSupporter, Consultation, Motion, MotionComment, MotionSupporter, User};
-use app\components\{HashedStaticCache, MotionSorter, UrlHelper};
+use app\components\{Html, HashedStaticCache, MotionSorter, UrlHelper};
 use app\models\settings\{Privileges, Consultation as ConsultationSettings};
-use yii\helpers\Html;
 
 /**
  * @var yii\web\View $this
@@ -17,6 +16,7 @@ use yii\helpers\Html;
 
 /** @var \app\controllers\ConsultationController $controller */
 $controller               = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout                   = $controller->layoutParams;
 $layout->bodyCssClasses[] = 'consultationIndex';
 $this->title              = $consultation->title;

@@ -3,14 +3,14 @@
 use app\models\AdminTodoItem;
 use \app\models\db\IMotion;
 use app\views\motion\LayoutHelper;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var yii\web\View $this
  * @var IMotion $entry
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\admin\MotionListController $controller */
 $controller = $this->context;
 $consultation = $controller->consultation;
 $motionStatuses = $consultation->getStatuses()->getStatusNames();

@@ -8,9 +8,9 @@
  */
 
 use app\models\db\ConsultationText;
-use yii\helpers\Html;
+use app\components\Html;
 
-/** @var \app\controllers\ConsultationController $controller */
+/** @var \app\controllers\PagesController $controller */
 $controller = $this->context;
 
 $consultation = \app\components\UrlHelper::getCurrentConsultation();
@@ -22,8 +22,9 @@ $params   = Yii::$app->params;
 $url      = parse_url(str_replace('<subdomain:[\w_-]+>', $consultation->site->subdomain, $params->domainSubdomain));
 $currHost = $url['host'];
 
+/** @var \app\models\settings\Layout $layout */
 $layout = $controller->layoutParams;
-$layout->addBreadcrumb($pageData->breadcrumb);
+$layout->addBreadcrumb($pageData->breadcrumb ?? '');
 
 if ($admin) {
     $layout->loadCKEditor();
@@ -78,7 +79,7 @@ echo '<h2 class="green">' . Yii::t('base', 'legal_base_title') . '</h2>
     <div class="content contentPage">';
 echo Yii::t('base', 'legal_base_intro') . '<br><br>';
 /** @var ConsultationText $text */
-$text = ConsultationText::findOne(['consultationId' => null, 'textId' => 'legal']);
+$text = ConsultationText::findOne(['consultationId' => null, 'textId' => 'legal', 'language' => null]);
 if ($text) {
     echo $text->text;
 }

@@ -2,7 +2,8 @@
 
 use app\components\UrlHelper;
 use app\models\forms\{ConsultationCreateForm, SiteCreateForm};
-use yii\helpers\{Html, Url};
+use app\components\Html;
+use yii\helpers\Url;
 
 /**
  * @var yii\web\View $this
@@ -12,8 +13,9 @@ use yii\helpers\{Html, Url};
  * @var SiteCreateForm $wizardModel
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\admin\IndexController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 
 $this->title = 'Veranstaltungen verwalten';

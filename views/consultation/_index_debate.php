@@ -1,15 +1,15 @@
 <?php
 
-use app\components\{DebateTools, LiveDataChannels};
-use yii\helpers\Html;
+use app\components\{Html, DebateTools, LiveDataChannels};
 
 /**
  * @var \yii\web\View $this
  * @var \app\models\db\Consultation $consultation
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\ConsultationController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout = $controller->layoutParams;
 
 $layout->addJsTranslation('debate');

@@ -1,18 +1,18 @@
 <?php
 
-use app\components\{LiveDataChannels, Tools, UrlHelper, VotingAdminWidgetData};
+use app\components\{Html, LiveDataChannels, Tools, UrlHelper, VotingAdminWidgetData};
 use app\models\api\debate\DebateState;
 use app\models\db\User;
 use app\models\settings\Privileges;
-use yii\helpers\Html;
 
 /**
  * @var \yii\web\View $this
  * @var \app\models\db\Consultation $consultation
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\ConsultationController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout = $controller->layoutParams;
 
 $layout->addJsTranslation('debate');

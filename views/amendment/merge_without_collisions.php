@@ -1,8 +1,7 @@
 <?php
 
-use app\components\{Diff\SingleAmendmentMergeViewParagraphData, MotionNumbering, UrlHelper};
+use app\components\{Html, Diff\SingleAmendmentMergeViewParagraphData, MotionNumbering, UrlHelper};
 use app\models\db\Amendment;
-use Yii\helpers\Html;
 
 /**
  * @var \Yii\web\View $this
@@ -11,8 +10,9 @@ use Yii\helpers\Html;
  * @var SingleAmendmentMergeViewParagraphData[][] $paragraphSections
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\AmendmentController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 $layout->loadCKEditor();
 $layout->addCSS('css/formwizard.css');

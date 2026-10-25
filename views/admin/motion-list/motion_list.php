@@ -4,7 +4,7 @@ use app\components\UrlHelper;
 use app\models\db\{IMotion, Motion};
 use app\models\forms\AdminMotionFilterForm;
 use app\views\motion\LayoutHelper;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var yii\web\View $this
@@ -12,8 +12,9 @@ use yii\helpers\Html;
  * @var AdminMotionFilterForm $search
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\admin\MotionListController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 $consultation = $controller->consultation;
 

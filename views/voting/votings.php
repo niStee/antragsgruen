@@ -1,19 +1,19 @@
 <?php
 
-use app\components\{LiveDataChannels, UrlHelper};
+use app\components\{Html, LiveDataChannels, UrlHelper};
 use app\models\db\Consultation;
 use app\models\db\User;
 use app\models\layoutHooks\Layout;
 use app\models\proposedProcedure\Factory;
-use yii\helpers\Html;
 
 /**
  * @var \yii\web\View $this
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\ConsultationController $controller */
 $controller = $this->context;
 $consultation = $controller->consultation;
+/** @var \app\models\settings\Layout $layout */
 $layout       = $controller->layoutParams;
 // The voting endpoints authenticate by JWT, like the rest of the REST API
 $layout->provideJwt = true;

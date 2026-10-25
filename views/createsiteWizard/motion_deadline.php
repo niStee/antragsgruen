@@ -1,6 +1,6 @@
 <?php
 use app\components\Tools;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var \app\models\forms\SiteCreateForm $model
@@ -27,7 +27,7 @@ $date   = Tools::date2bootstraptime($model->motionDeadline);
                     ); ?>
                 </span>
             </label>
-            <label class="radio-checkbox-label radio-label date-label broad value-1">
+            <label class="radio-checkbox-label radio-label broad value-1">
                 <span class="title long"><?= $t('motdead_yes') ?></span>
                 <span class="description">
                     <span class="input-group date motionsDeadline">

@@ -1,9 +1,8 @@
 <?php
 
-use app\components\{diff\Diff, diff\DiffRenderer, HTMLTools, UrlHelper};
+use app\components\{Html, diff\Diff, diff\DiffRenderer, HTMLTools, UrlHelper};
 use app\models\db\{Motion, MotionSection};
 use app\models\sectionTypes\ISectionType;
-use yii\helpers\Html;
 
 /**
  * @var yii\web\View $this
@@ -14,8 +13,9 @@ use yii\helpers\Html;
  * @var null|string $msgAlert
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\MotionController $controller */
 $controller   = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout       = $controller->layoutParams;
 $consultation = $controller->consultation;
 

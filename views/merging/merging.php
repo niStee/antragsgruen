@@ -5,7 +5,7 @@ use app\components\UrlHelper;
 use app\models\db\{Amendment, MotionSection};
 use app\models\mergeAmendments\Init;
 use app\models\sectionTypes\SectionLanguageMode;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var \yii\web\View $this
@@ -13,8 +13,9 @@ use yii\helpers\Html;
  * @var bool $twoCols
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\MotionController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 $motion     = $form->motion;
 $consultation = $motion->getMyConsultation();

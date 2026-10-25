@@ -1,15 +1,15 @@
 <?php
 
-use app\components\{HTMLTools, UrlHelper};
+use app\components\{Html, HTMLTools, UrlHelper};
 use app\views\pdfLayouts\IPDFLayout;
-use yii\helpers\Html;
 
 /**
  * @var $this yii\web\View
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\admin\MotionTypeController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 
 $this->title = Yii::t('admin', 'motion_type_create_head');

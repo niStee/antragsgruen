@@ -1,12 +1,11 @@
 <?php
 
-use app\components\{HTMLTools, UrlHelper};
+use app\components\{Html, HTMLTools, UrlHelper};
 use app\models\settings\Layout;
-use yii\helpers\Html;
 
 /**
  * @var \app\models\db\Amendment $amendment
- * @var bool $adminEdit
+ * @var string|null $adminEdit
  * @var Layout $layout
  */
 

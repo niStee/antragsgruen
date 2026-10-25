@@ -6,7 +6,7 @@ use app\models\api\voting\VotingItemType;
 use app\models\exceptions\{Access, Internal, NotFound, FormError};
 use app\models\proposedProcedure\Agenda;
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges, MotionSection as MotionSectionSettings};
-use app\components\{diff\AmendmentSectionFormatter, diff\DiffRenderer, HashedStaticCache, IMotionStatusFilter, LanguageTools, RequestContext, RSSExporter, Tools, UrlHelper};
+use app\components\{Html, diff\AmendmentSectionFormatter, diff\DiffRenderer, HashedStaticCache, IMotionStatusFilter, LanguageTools, RequestContext, RSSExporter, Tools, UrlHelper};
 use app\models\events\AmendmentEvent;
 use app\models\layoutHooks\Layout;
 use app\models\notifications\{AmendmentPublished as AmendmentPublishedNotification,
@@ -15,7 +15,6 @@ use app\models\notifications\{AmendmentPublished as AmendmentPublishedNotificati
 use app\models\sectionTypes\{Image, ISectionType, PDF, SectionLanguageMode, TextSimple};
 use app\models\supportTypes\SupportBase;
 use yii\db\ActiveQuery;
-use yii\helpers\Html;
 
 /**
  * @property int|null $id
@@ -306,6 +305,20 @@ class Amendment extends IMotion implements IRSSItem
 
     public function getTitle(): string
     {
+        return $this->buildTitle($this->getMyExistingMotion()->title);
+    }
+
+    /**
+     * Like getTitle(), but using the motion title in the given (or, by default, the reader's
+     * current) language - see Motion::getTitleForDisplay() for the fallback rules.
+     */
+    public function getTitleWithPrefixForDisplay(?string $language = null): string
+    {
+        return $this->buildTitle($this->getMyExistingMotion()->getTitleForDisplay($language));
+    }
+
+    private function buildTitle(string $motionTitle): string
+    {
         $motion = $this->getMyExistingMotion();
         if ($motion->titlePrefix !== '') {
             $showMotionPrefix = (mb_stripos($this->getFormattedTitlePrefix() ?: '', $motion->getFormattedTitlePrefix()) === false);
@@ -314,18 +327,18 @@ class Amendment extends IMotion implements IRSSItem
         }
         $prefix = $this->getFormattedTitlePrefix() ?: \Yii::t('amend', 'amendment');
         if ($this->getMyConsultation()->getSettings()->hideTitlePrefix) {
-            return $prefix . \Yii::t('amend', 'amend_for') . $motion->title;
+            return $prefix . \Yii::t('amend', 'amend_for') . $motionTitle;
         } else {
             if ($this->getMyExistingMotion()->getFormattedTitlePrefix()) {
                 if ($showMotionPrefix) {
                     $str = $prefix . \Yii::t('amend', 'amend_for');
-                    $str .= $motion->getFormattedTitlePrefix() . ': ' . $motion->title;
+                    $str .= $motion->getFormattedTitlePrefix() . ': ' . $motionTitle;
                     return $str;
                 } else {
-                    return $prefix . ': ' . $motion->title;
+                    return $prefix . ': ' . $motionTitle;
                 }
             } else {
-                return $prefix . \Yii::t('amend', 'amend_for') . $motion->title;
+                return $prefix . \Yii::t('amend', 'amend_for') . $motionTitle;
             }
         }
     }

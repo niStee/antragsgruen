@@ -1,10 +1,9 @@
 <?php
 
-use app\components\{LiveDataChannels, UrlHelper};
+use app\components\{Html, LiveDataChannels, UrlHelper};
 use app\models\api\SpeechUser;
 use app\models\settings\Privileges;
 use app\models\db\User;
-use yii\helpers\Html;
 
 /**
  * @var \yii\web\View $this
@@ -18,6 +17,7 @@ if (!$queue) {
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $consultation = $controller->consultation;
+/** @var \app\models\settings\Layout $layout */
 $layout = $controller->layoutParams;
 $user = User::getCurrentUser();
 $cookieUser = ($user ? null : \app\components\CookieUser::getFromCookieOrCache());

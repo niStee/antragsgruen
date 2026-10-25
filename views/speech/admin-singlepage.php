@@ -1,9 +1,8 @@
 <?php
 
-use app\components\{LiveDataChannels, Tools, UrlHelper};
+use app\components\{Html, LiveDataChannels, Tools, UrlHelper};
 use app\models\api\speech\SpeechQueueAdmin;
 use app\models\db\SpeechQueue;
-use yii\helpers\Html;
 
 /**
  * @var \yii\web\View $this
@@ -13,6 +12,7 @@ use yii\helpers\Html;
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $consultation = $controller->consultation;
+/** @var \app\models\settings\Layout $layout */
 $layout       = $controller->layoutParams;
 $layout->bodyCssClasses[] = 'manageSpeechPage';
 if ($queue->motion) {

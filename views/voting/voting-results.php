@@ -3,15 +3,16 @@
 use app\components\UrlHelper;
 use app\models\db\{Consultation, User};
 use app\models\proposedProcedure\Factory;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var \yii\web\View $this
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\ConsultationController $controller */
 $controller = $this->context;
 $consultation = $controller->consultation;
+/** @var \app\models\settings\Layout $layout */
 $layout       = $controller->layoutParams;
 // The voting endpoints authenticate by JWT, like the rest of the REST API
 $layout->provideJwt = true;

@@ -4,15 +4,18 @@
  * @var $this yii\web\View
  * @var Consultation $consultation
  * @var string $category
+ * @var WordingOverridesForm $form
  */
 
-use app\components\{HTMLTools, yii\MessageSource, UrlHelper};
+use app\components\{Html, HTMLTools, yii\MessageSource, UrlHelper};
 use app\models\db\Consultation;
-use yii\helpers\Html;
+use app\components\LanguageTools;
+use app\models\forms\WordingOverridesForm;
 use yii\i18n\I18N;
 
 /** @var \app\controllers\admin\IndexController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 
 $layout->addCSS('css/backend.css');
@@ -81,15 +84,9 @@ echo '<input type="hidden" name="category" value="' . Html::encode($category) . 
 $i18n = Yii::$app->get('i18n');
 /** @var MessageSource $messagesource */
 $messagesource = $i18n->getMessageSource($category);
-$strings       = $messagesource->getBaseMessagesWithHints($category, $consultation->wordingBase);
+$strings       = $messagesource->getBaseMessagesWithHints($category, LanguageTools::getCurrentLanguage());
 
-
-$consStrings = [];
-foreach ($consultation->texts as $text) {
-    if ($text->category === $category) {
-        $consStrings[$text->textId] = $text->text;
-    }
-}
+$consStrings = $form->getDisplayValues($category);
 
 echo '<br><br>';
 

@@ -4,7 +4,7 @@ use app\models\db\{AmendmentSection, Consultation, IAdminComment};
 use app\models\proposedProcedure\Agenda;
 use app\models\sectionTypes\{SectionLanguageMode, TextSimpleCommon};
 use CatoTH\HTML2OpenDocument\Spreadsheet;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var $this yii\web\View
@@ -14,7 +14,7 @@ use yii\helpers\Html;
  * @var bool $onlyPublic
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\admin\ProposedProcedureController $controller */
 $controller   = $this->context;
 $consultation = $controller->consultation;
 

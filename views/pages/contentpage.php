@@ -9,9 +9,9 @@
 use app\components\UrlHelper;
 use app\models\policies\IPolicy;
 use app\models\db\{ConsultationText, User};
-use yii\helpers\Html;
+use app\components\Html;
 
-/** @var \app\controllers\ConsultationController $controller */
+/** @var \app\controllers\Base $controller */
 $controller = $this->context;
 
 $consultation = UrlHelper::getCurrentConsultation();
@@ -21,8 +21,9 @@ $saveUrl      = $pageData->getSaveUrl();
 
 $this->title = $pageData->title ?: $pageData->textId;
 
+/** @var \app\models\settings\Layout $layout */
 $layout = $controller->layoutParams;
-if (!in_array($controller->action->id, ['home', 'index'])) {
+if (!in_array($controller->action?->id, ['home', 'index'])) {
     $layout->addBreadcrumb($pageData->breadcrumb ?: $pageData->textId);
 } else {
     $layout->breadcrumbs = [];
@@ -35,7 +36,7 @@ if ($pageData->textId === ConsultationText::DEFAULT_PAGE_WELCOME) {
     $files = ($fileGroup ? $consultation->getDownloadableFiles($fileGroup->id) : []);
 }
 
-if (User::getCurrentUser() && $pageData->isCustomPage()) {
+if (User::getCurrentUser() && $pageData->isCustomPage() && $consultation) {
     $fullscreenButton = $this->render('@app/views/shared/_fullscreen_toggle.php', [
         'init_page' => 'page-' . $pageData->id,
         'init_content_url' => UrlHelper::absolutizeLink($pageData->getJsonUrl()),

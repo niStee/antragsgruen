@@ -1,8 +1,7 @@
 <?php
 
-use app\components\{HTMLTools, Tools, UrlHelper};
+use app\components\{Html, HTMLTools, Tools, UrlHelper};
 use app\models\db\{ConsultationMotionType, ConsultationSettingsMotionSection};
-use yii\helpers\Html;
 
 /**
  * @var Yii\web\View $this
@@ -11,8 +10,9 @@ use yii\helpers\Html;
  * @var string[] $languageSetupWarnings
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\admin\MotionTypeController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout = $controller->layoutParams;
 
 $this->title = Yii::t('admin', 'motion_type_edit');

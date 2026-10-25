@@ -7,9 +7,9 @@
 
 use app\models\db\{Amendment, Motion};
 use app\components\UrlHelper;
-use yii\helpers\Html;
+use app\components\Html;
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\admin\AmendmentController $controller */
 $controller = $this->context;
 $params     = $controller->layoutParams;
 
@@ -27,7 +27,7 @@ foreach ($amendments as $data) {
     foreach ($data['amendments'] as $amendment) {
         echo '<li>';
         $url = UrlHelper::createAmendmentUrl($amendment, 'pdf');
-        echo Html::a($amendment->titlePrefix, $url, ['class' => 'amendment' . $amendment->id]);
+        echo Html::a($amendment->titlePrefix ?? '-', $url, ['class' => 'amendment' . $amendment->id]);
         echo '</li>';
     }
     echo '</ul>';

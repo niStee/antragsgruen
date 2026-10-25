@@ -2,13 +2,13 @@
 
 use app\components\UrlHelper;
 use app\models\db\Motion;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var Yii\web\View $this
  * @var Motion $motion
  * @var string $mode
- * @var \app\controllers\Base $controller
+ * @var \app\controllers\MotionController $controller
  */
 
 $typeName = $motion->getMyMotionType()->getTitleSingularForDisplay();

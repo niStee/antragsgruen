@@ -2,15 +2,16 @@
 
 use app\components\UrlHelper;
 use app\models\db\Amendment;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var Yii\web\View $this
  * @var Amendment $amendment
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\AmendmentController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 $motion     = $amendment->getMyMotion();
 

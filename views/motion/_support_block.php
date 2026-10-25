@@ -5,14 +5,15 @@ use app\models\db\ISupporter;
 use app\models\db\User;
 use app\models\settings\InitiatorForm;
 use app\models\supportTypes\SupportBase;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var User|null $user
  * @var SupportBase $supportType
- * @var \app\controllers\UserController $controller
+ * @var \app\controllers\Base $controller
  */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 
 $nameReadOnly  = ($user && ($user->fixedData & User::FIXED_NAME) ? 'readonly' : '');

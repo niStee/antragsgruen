@@ -4,7 +4,7 @@ use app\components\UrlHelper;
 use app\models\settings\PrivilegeQueryContext;
 use app\models\settings\Privileges;
 use app\models\db\{IMotion, User};
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var yii\web\View $this
@@ -12,7 +12,7 @@ use yii\helpers\Html;
  * @var string $type
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\admin\AdminBase $controller */
 $controller = $this->context;
 
 $idBase = $type . $imotion->id;

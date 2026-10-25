@@ -2,7 +2,7 @@
 
 use app\components\UrlHelper;
 use app\models\db\{User, UserNotification};
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var yii\web\View $this
@@ -12,6 +12,7 @@ use yii\helpers\Html;
 
 /** @var \app\controllers\ConsultationController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 
 $this->title = Yii::t('con', 'noti_title');

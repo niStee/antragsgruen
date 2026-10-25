@@ -3,15 +3,16 @@
 use app\components\UrlHelper;
 use app\models\db\Consultation;
 use app\models\settings\{AntragsgruenApp, Privileges};
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var yii\web\View $this
  * @var Consultation $consultation
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\admin\UsersController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout = $controller->layoutParams;
 
 $preEmails = '';

@@ -1,7 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var Yii\web\View $this
@@ -11,6 +11,7 @@ use yii\helpers\Html;
 /** @var \app\controllers\admin\IndexController $controller */
 $controller   = $this->context;
 $consultation = $controller->consultation;
+/** @var \app\models\settings\Layout $layout */
 $layout       = $controller->layoutParams;
 $layout->addCSS('css/backend.css');
 

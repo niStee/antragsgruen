@@ -2,15 +2,16 @@
 
 use app\components\UrlHelper;
 use app\models\db\Motion;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var Yii\web\View $this
  * @var Motion $motion
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\MotionController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 
 $this->title = Yii::t('motion', 'edit_done');

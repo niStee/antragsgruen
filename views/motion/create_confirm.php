@@ -3,13 +3,13 @@
 use app\components\UrlHelper;
 use app\models\db\Motion;
 use app\models\settings\MotionSection;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var \yii\web\View $this
  * @var Motion $motion
  * @var string $mode
- * @var \app\controllers\Base $controller
+ * @var \app\controllers\MotionController $controller
  * @var string|null $deleteDraftId
  */
 

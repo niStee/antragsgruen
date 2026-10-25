@@ -3,19 +3,20 @@
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\ConsultationMotionType;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var Yii\web\View $this
  * @var Amendment $amendment
  * @var string $mode
- * @var \app\controllers\Base $controller
+ * @var \app\controllers\AmendmentController $controller
  */
 
 $this->title = Yii::t('amend', $mode == 'create' ? 'amendment_create' : 'amendment_edit');
 $controller  = $this->context;
 $motion      = $amendment->getMyMotion();
 $motionType  = $amendment->getMyMotionType();
+/** @var \app\models\settings\Layout $layout */
 $layout      = $controller->layoutParams;
 
 if (!$motion->getMyMotionType()->amendmentsOnly) {
@@ -23,7 +24,7 @@ if (!$motion->getMyMotionType()->amendmentsOnly) {
 }
 if ($amendment->amendingAmendmentId) {
     $amendedAmendment = $amendment->amendedAmendment;
-    $layout->addBreadcrumb($amendedAmendment->getFormattedTitlePrefix(), UrlHelper::createAmendmentUrl($amendedAmendment));
+    $layout->addBreadcrumb($amendedAmendment->getFormattedTitlePrefix() ?? '', UrlHelper::createAmendmentUrl($amendedAmendment));
 }
 $layout->addBreadcrumb($amendment->getFormattedTitlePrefix() ?? Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment));
 
@@ -65,7 +66,7 @@ if ($amendment->status === Amendment::STATUS_COLLECTING_SUPPORTERS) {
 echo '</div>';
 
 if ($motionType->amendmentsOnly) {
-    $backUrl = UrlHelper::homeUrl();
+    $backUrl = UrlHelper::consultationHomeUrl();
 } else {
     $backUrl = UrlHelper::createMotionUrl($amendment->getMyMotion());
     if ($amendment->status == Amendment::STATUS_SUBMITTED_SCREENED &&

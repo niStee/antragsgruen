@@ -4,7 +4,7 @@ use app\components\updater\UpdateChecker;
 use app\components\UrlHelper;
 use app\models\db\User;
 use app\models\settings\Privileges;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var yii\web\View $this
@@ -13,8 +13,9 @@ use yii\helpers\Html;
  * @var \app\models\db\Consultation $consultation
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\admin\IndexController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 
 $this->title = Yii::t('admin', 'index_title');
