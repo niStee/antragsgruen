@@ -18,7 +18,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '8.3'
           extensions: zip, intl, gd
       - name: Get composer cache directory
         id: composer-cache
@@ -34,7 +34,7 @@ jobs:
       - name: Install PHPStan extras
         run: composer install --prefer-dist --no-progress --no-interaction --working-dir=.github/phpstan
       - name: Download artifact
-        uses: dawidd6/action-download-artifact@v26
+        uses: dawidd6/action-download-artifact@v27
         with:
           workflow: .github/workflows/phpstan-generate-baseline.yml
           workflow_conclusion: success

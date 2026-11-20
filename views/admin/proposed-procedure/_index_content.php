@@ -115,8 +115,7 @@ foreach ($proposedAgenda as $proposedItem) {
                     ?>
                     <thead>
                     <tr>
-                        <th class="prefix"><?= Yii::t('con', 'proposal_table_motion') ?></th>
-                        <th class="initiator"><?= Yii::t('con', 'proposal_table_initiator') ?></th>
+                        <th class="title"><?= Yii::t('con', 'proposal_table_motion') ?></th>
                         <?php
                         if ($hasResponsibilities) {
                             ?>
@@ -175,17 +174,14 @@ foreach ($proposedAgenda as $proposedItem) {
                         }
                         ?>
                         <tr class="item <?= implode(' ', $classes) ?>" data-id="<?= $item->id ?>">
-                            <td class="prefix">
+                            <td class="title">
                                 <?php
                                 if (is_a($item, Amendment::class)) {
                                     /** @var Amendment $item */
                                     echo HTMLTools::amendmentDiffTooltip($item, 'bottom');
                                 }
-                                echo Html::a(Html::encode($titlePre . $item->getFormattedTitlePrefix()), $item->getLink())
-                                ?>
-                            </td>
-                            <td class="initiator">
-                                <?php
+                                echo Html::a(Html::encode($titlePre . $item->getTitleWithPrefixForDisplay()), $item->getLink());
+                                echo '<br>';
                                 echo LayoutHelper::formatInitiators($item->getInitiators(), $item, true, true);
                                 ?>
                             </td>
@@ -214,8 +210,7 @@ foreach ($proposedAgenda as $proposedItem) {
                                         }
                                         echo '<div class="tagNames">';
                                         echo implode(', ', $tags);
-                                        echo '<button class="btn btn-sm btn-link tagEditOpener" type="button" title="' . Yii::t('amend',
-                                                'proposal_edit_tags') . '">';
+                                        echo '<button class="btn btn-sm btn-link tagEditOpener" type="button" title="' . Html::encodeTranslationForAttribute(Yii::t('amend', 'proposal_edit_tags')) . '">';
                                         echo '<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>';
                                         echo '</button>';
                                         echo '</div>';
@@ -255,7 +250,7 @@ foreach ($proposedAgenda as $proposedItem) {
                             ?>
                             <td class="visible">
                                 <input type="checkbox" name="visible"
-                                       title="<?= Yii::t('con', 'proposal_table_visible') ?>"
+                                       title="<?= Html::encodeTranslationForAttribute(Yii::t('con', 'proposal_table_visible')) ?>"
                                        data-save-url="<?= Html::encode($setVisibleUrl) ?>"
                                     <?= ($proposal->visibleFrom ? 'checked' : '') ?>>
                             </td>

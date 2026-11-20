@@ -23,6 +23,14 @@ class SsoLogin implements LoginProviderInterface
 
     private const GROUP_PREFIX = Module::AUTH_KEY_GROUPS . ':';
 
+    /**
+     * Target fields that always hold a list, even when the provider reports exactly one entry.
+     * getAttributeValue() flattens single-element arrays to a scalar, and getOrCreateUser() only
+     * syncs groups when they are an array - so without this, a user who is a member of exactly
+     * one group would silently never be synced.
+     */
+    private const LIST_TARGET_FIELDS = ['groups'];
+
     private array $config;
     private string $protocol;
 
@@ -247,11 +255,22 @@ class SsoLogin implements LoginProviderInterface
     }
 
     /**
+     * Get effective attribute mapping by merging custom overrides onto provider defaults.
+     */
+    public function getEffectiveAttributeMapping(string $source): array
+    {
+        return array_merge(
+            $this->getDefaultAttributeMapping($source),
+            $this->config['attributeMapping'] ?? []
+        );
+    }
+
+    /**
      * Get or create user with JIT provisioning
      */
     private function getOrCreateUser(array $attributes, string $source): User
     {
-        $attributeMapping = $this->config['attributeMapping'] ?? $this->getDefaultAttributeMapping($source);
+        $attributeMapping = $this->getEffectiveAttributeMapping($source);
 
         // Extract user data based on attribute mapping
         $userData = $this->extractUserData($attributes, $attributeMapping);
@@ -345,9 +364,15 @@ class SsoLogin implements LoginProviderInterface
         foreach ($mapping as $targetField => $sourceField) {
             $value = $this->getAttributeValue($attributes, $sourceField);
 
-            if ($value !== null) {
-                $userData[$targetField] = $value;
+            if ($value === null) {
+                continue;
             }
+
+            if (in_array($targetField, self::LIST_TARGET_FIELDS, true) && !is_array($value)) {
+                $value = [$value];
+            }
+
+            $userData[$targetField] = $value;
         }
 
         return $userData;

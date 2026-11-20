@@ -1,11 +1,24 @@
 # Version history
 
-### Version 4.18.1 [not released yet]
+### Version 4.18.2 [not released yet]
 
+- Support multiple speaking lists on the home page in parallel.
+- Bugfix: The ODS export links for proposed procedures did not work.
+- Bugfix: URLs with a trailing slash like "/site/" were not found. The application now normalizes them, redirecting to the canonical URL.
+
+
+### Version 4.18.1 (2026-11-02)
+
+- Several security-related issues found during an automated security-scan were resolved.
 - In multilingual consultations, the welcome text, other content pages and UI text fragments can now also be translated.
 - Bugfix: Changing additional supporters for amendments was not possible in the admin view.
 - Bugfix: The separate deadline for amendments to amendments was not properly checked on the submission confirmation page.
 - Bugfix: Under rare circumstances, saving a modified proposed procedure failed.
+- Bugfix: Amendments amending another amendment did not properly work if amendments were restricted to only one paragraph.
+- In the proposed procedure list, the title of the motion / amendment is now shown as well.
+- The new two-layer-diff view for amendments amending amendments is now used more consistently.
+- Several smaller layout improvements.
+- Bugfix: Custom themes referenced their fonts and images with relative URLs, so icons and fonts were missing when the stylesheet was not served from the web root.
 
 ## Version 4.18.0 (2026-10-11)
 
