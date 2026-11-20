@@ -106,11 +106,35 @@ class UserGroupAdminMethods
     }
 
     /**
+     * Only users listed in the user administration of this consultation may be edited through it,
+     * i.e. members of one of its available user groups. Otherwise, any account of the installation
+     * could be pulled into the consultation by its ID.
+     *
+     * @throws UserEditFailed
+     */
+    private function getEditableUser(int $userId): User
+    {
+        $user = User::findOne(['id' => $userId]);
+        if ($user) {
+            $availableGroupIds = array_map(
+                fn (ConsultationUserGroup $group): int => $group->id ?? throw new \RuntimeException('User group without ID'),
+                $this->consultation->getAllAvailableUserGroups()
+            );
+            foreach ($user->userGroups as $userGroup) {
+                if (in_array($userGroup->id, $availableGroupIds, true)) {
+                    return $user;
+                }
+            }
+        }
+        throw new UserEditFailed('User not found');
+    }
+
+    /**
      * @throws UserEditFailed
      */
     public function setUserGroupsToUser(int $userId, array $groupIds): void
     {
-        $user = User::findOne(['id' => $userId]);
+        $user = $this->getEditableUser($userId);
         $userHasGroups = [];
 
         $selectableUserGroups = $user->getSelectableUserGroups($this->consultation);
@@ -195,12 +219,19 @@ class UserGroupAdminMethods
 
         if ($newPassword !== null && trim($newPassword) !== '') {
             $user->changePassword(trim($newPassword));
+            if ($userId === User::getCurrentUser()?->id) {
+                // Changing the password logs out all sessions, but the admin's own one should stay logged in
+                RequestContext::getYiiUser()->switchIdentity($user, AntragsgruenApp::getInstance()->autoLoginDuration);
+            }
         }
     }
 
+    /**
+     * @throws UserEditFailed
+     */
     public function setUserVoteWeight(int $userId, int $voteWeight): void
     {
-        $user = User::findOne(['id' => $userId]);
+        $user = $this->getEditableUser($userId);
 
         $settings = $user->getSettingsObj();
         $settings->setVoteWeight($this->consultation, $voteWeight);
@@ -220,6 +251,9 @@ class UserGroupAdminMethods
         return null;
     }
 
+    /**
+     * @throws UserEditFailed
+     */
     public function setUserGroupUsers(int $groupId, array $userIds): void
     {
         $userGroup = $this->getUserGroup($groupId);
@@ -227,11 +261,24 @@ class UserGroupAdminMethods
             return;
         }
 
+        // This is reachable with the voting privilege alone, so it must not be a way to grant admin privileges.
+        // Groups without any privileges (participants, voter groups, synced groups) stay editable as before.
+        $groupHasPrivileges = $userGroup->getGroupPermissions()->containsPrivilege(Privileges::PRIVILEGE_ANY, null);
+        if ($groupHasPrivileges) {
+            if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null)) {
+                throw new UserEditFailed('Only administrators can change the members of a group with privileges');
+            }
+            $this->preventInvalidSiteAdminEdit($this->consultation, $userGroup);
+        }
+
         // Remove all users that should not be in the group anymore
         $existingUserIds = [];
         $defaultGroup = $this->getDefaultUserGroup();
         foreach ($userGroup->users as $user) {
             if (!in_array($user->id, $userIds)) {
+                if ($groupHasPrivileges) {
+                    $this->preventRemovingMyself($this->consultation, $userGroup, $user);
+                }
                 $user->unlink('userGroups', $userGroup, true);
                 $this->logUserGroupRemove($user, $userGroup);
 
@@ -251,6 +298,9 @@ class UserGroupAdminMethods
                 continue;
             }
             $user = User::findOne(['id' => $userId]);
+            if (!$user) {
+                continue;
+            }
             $user->link('userGroups', $userGroup);
             $this->logUserGroupAdd($user, $userGroup);
             AdminTodoItem::flushUserTodoCount($this->consultation, $user->id);
@@ -345,7 +395,7 @@ class UserGroupAdminMethods
      */
     public function removeUserGroup(int $groupId): void
     {
-        $group = ConsultationUserGroup::findOne(['id' => $groupId]);
+        $group = $this->consultation->getUserGroupById($groupId);
         if (!$group) {
             throw new UserEditFailed('Group does not exist');
         }
@@ -747,6 +797,7 @@ class UserGroupAdminMethods
                             }
                         }
                         if ($group) {
+                            $this->preventInvalidSiteAdminEdit($this->consultation, $group);
                             $userGroups[] = $group;
                         } else {
                             $errors[] = "$email: Warning: Group '$groupName' not found.";
@@ -767,23 +818,46 @@ class UserGroupAdminMethods
                         continue;
                     }
 
-                    if ($firstName !== '' || $lastName !== '') {
-                        $user->nameGiven = $firstName;
-                        $user->nameFamily = $lastName;
-                        $user->name = $name;
+                    // Accounts are global (shared by all sites), so only those who may edit account data
+                    // may change the profile of an existing account. Otherwise, only the groups are changed.
+                    if (User::havePrivilege($this->consultation, Privileges::PRIVILEGE_GLOBAL_USER_ADMIN, null)) {
+                        if ($firstName !== '' || $lastName !== '') {
+                            $user->nameGiven = $firstName;
+                            $user->nameFamily = $lastName;
+                            $user->name = $name;
+                        }
+                        if ($organization !== '') {
+                            $user->organization = $organization;
+                        }
+                        $user->save(false);
                     }
-                    if ($organization !== '') {
-                        $user->organization = $organization;
-                    }
-                    $user->save(false);
 
                     if ($collisionBehavior === 'replace') {
+                        $newGroupIds = array_map(
+                            fn (ConsultationUserGroup $g): int => $g->id ?? throw new \RuntimeException('User group without ID'),
+                            $userGroups
+                        );
                         $consultationGroups = $user->getUserGroupsForConsultation($this->consultation);
+                        $keptGroupIds = [];
+                        $removedGroups = [];
                         foreach ($consultationGroups as $oldGroup) {
+                            if (in_array($oldGroup->id, $newGroupIds, true)) {
+                                $keptGroupIds[] = $oldGroup->id;
+                            } else {
+                                // Check all removals before changing anything
+                                $this->preventInvalidSiteAdminEdit($this->consultation, $oldGroup);
+                                $this->preventRemovingMyself($this->consultation, $oldGroup, $user);
+                                $removedGroups[] = $oldGroup;
+                            }
+                        }
+                        foreach ($removedGroups as $oldGroup) {
                             $user->unlink('userGroups', $oldGroup, true);
                             $this->logUserGroupRemove($user, $oldGroup);
                         }
                         foreach ($userGroups as $group) {
+                            if (in_array($group->id, $keptGroupIds, true)) {
+                                continue;
+                            }
                             $user->link('userGroups', $group);
                             $this->logUserGroupAdd($user, $group);
                         }

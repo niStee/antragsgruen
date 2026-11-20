@@ -31,9 +31,6 @@ class AmendmentController extends Base
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
-        if (!$amendment) {
-            return new HtmlErrorResponse(404, 'Amendment not found');
-        }
 
         $selectedPdfLayout = IPDFLayout::getPdfLayoutForMotionType($amendment->getMyMotionType());
 
@@ -125,9 +122,6 @@ class AmendmentController extends Base
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
-        if (!$amendment) {
-            return new HtmlErrorResponse(404, 'Amendment not found');
-        }
 
         if (!$amendment->isReadable()) {
             return new HtmlErrorResponse(404, \Yii::t('amend', 'err_not_visible'));
@@ -151,9 +145,6 @@ class AmendmentController extends Base
 
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId, 'view');
         $this->amendment = $amendment;
-        if (!$amendment) {
-            return new HtmlErrorResponse(404, 'Amendment not found');
-        }
 
         if ($this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, null)) {
             $adminEdit = UrlHelper::createUrl(['admin/amendment/update', 'amendmentId' => $amendmentId]);
@@ -207,11 +198,40 @@ class AmendmentController extends Base
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
-        if (!$amendment) {
-            return new HtmlErrorResponse(404, 'Amendment not found');
+        if (!$this->mayViewAjaxDiff($amendment)) {
+            return new HtmlErrorResponse(404, \Yii::t('amend', 'err_not_visible'));
         }
 
         return new HtmlResponse($this->renderPartial('ajax_diff', ['amendment' => $amendment]));
+    }
+
+    /**
+     * Besides readable amendments, the tooltips are also shown on admin pages and in the merging tool,
+     * for drafts and for not yet published modifications of proposed procedures.
+     */
+    private function mayViewAjaxDiff(Amendment $amendment): bool
+    {
+        if ($amendment->isReadable()) {
+            return true;
+        }
+
+        // The modified text of a published proposed procedure (shown e.g. in public merging drafts)
+        $referencingProposal = $amendment->proposalReferencedByAmendment ?? $amendment->proposalReferencedByMotion;
+        if ($referencingProposal && $referencingProposal->isProposalPublic()) {
+            return true;
+        }
+
+        if (User::haveOneOfPrivileges($this->consultation, [
+            Privileges::PRIVILEGE_SCREENING,
+            Privileges::PRIVILEGE_MOTION_SEE_UNPUBLISHED,
+            Privileges::PRIVILEGE_MOTION_STATUS_EDIT,
+            Privileges::PRIVILEGE_CHANGE_PROPOSALS,
+        ], PrivilegeQueryContext::amendment($amendment))) {
+            return true;
+        }
+
+        $motion = $amendment->getMyMotion();
+        return $motion !== null && $motion->canMergeAmendments();
     }
 
     public function actionCreatedone(string $motionSlug, int $amendmentId, string $fromMode): ResponseInterface
@@ -358,7 +378,7 @@ class AmendmentController extends Base
         $amendingAmendment = null;
         if ($createFromAmendment > 0 && $motion->getMyMotionType()->getSettingsObj()->allowAmendmentsToAmendments) {
             $adoptAmend = $this->consultation->getAmendment($createFromAmendment);
-            if ($adoptAmend && $adoptAmend->motionId === $motion->id) {
+            if ($adoptAmend && $adoptAmend->motionId === $motion->id && $adoptAmend->isReadable()) {
                 $amendingAmendment = $adoptAmend;
             }
         }
@@ -420,12 +440,18 @@ class AmendmentController extends Base
                 $this->getHttpSession()->setFlash('error', $e->getMessage());
             }
         } elseif ($cloneFrom > 0) {
+            // Using an existing amendment as template is an admin function, and also exposes unpublished amendments and contact data
             $adoptAmend = $this->consultation->getAmendment($cloneFrom);
-            $form->cloneSupporters($adoptAmend);
-            $form->cloneAmendmentText($adoptAmend, true);
+            if ($adoptAmend && (
+                $this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::amendment($adoptAmend)) ||
+                $this->consultation->havePrivilege(Privileges::PRIVILEGE_MOTION_STATUS_EDIT, PrivilegeQueryContext::amendment($adoptAmend))
+            )) {
+                $form->cloneSupporters($adoptAmend);
+                $form->cloneAmendmentText($adoptAmend, true);
+            }
         } elseif ($amendingAmendment !== null) {
             $form->cloneAmendmentText($amendingAmendment, false);
-            $form->toAnotherAmendment = $amendingAmendment->id;
+            $form->setAmendedAmendment($amendingAmendment);
         }
 
         if (count($form->supporters) == 0) {
@@ -472,9 +498,6 @@ class AmendmentController extends Base
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
-        if (!$amendment) {
-            return new RestApiExceptionResponse(404, 'Amendment not found');
-        }
 
         $post = $this->getPostValues();
         if (!in_array('version', array_keys($post))) {
@@ -676,9 +699,6 @@ class AmendmentController extends Base
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
-        if (!$amendment) {
-            return new HtmlErrorResponse(404, 'Amendment not found');
-        }
 
         if ($this->getHttpRequest()->post('newVersion', null) === 'new') {
             $oldProposal = $amendment->getProposalByVersion($proposalVersion);
@@ -750,9 +770,6 @@ class AmendmentController extends Base
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
-        if (!$amendment) {
-            return new RestApiExceptionResponse(404, 'Amendment not found');
-        }
         if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::amendment($amendment))) {
             return new RestApiExceptionResponse(403, 'Not permitted to change the status');
         }
